@@ -1,0 +1,44 @@
+.bs-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: .5rem 1rem;
+}
+
+.bs-dialog-item {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: .5rem;
+  border-radius: 1rem;
+}
+
+.bs-dialog-item:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+.bs-dialog-item input,
+.bs-dialog-item textarea {
+  outline: none;
+  margin-top: .5rem;
+  padding: .5rem 0 .5rem .5rem;
+  background: var(--popup-border-color);
+  color: var(--popup-text-color);
+  border: 0;
+  border-radius: .5rem;
+}
+
+.bs-dialog-item input::placeholder,
+.bs-dialog-item textarea::placeholder {
+  opacity: 0.2;
+}
+
+.bs-dialog-item label {
+  font-weight: 600;
+  color: var(--secondary-text-color);
+}
+
+.bs-dialog-item label.require::after {
+  content: "*";
+  color: red;
+}
