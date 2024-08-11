@@ -1,3 +1,4 @@
+![Logo](https://raw.githubusercontent.com/NezitX/better-snippets/main/assets/logo.png)
 # BetterSnippets
 
 BetterSnippets is an advanced snippet management plugin for Acode, enhancing your coding experience with customizable and language-specific code snippets.
@@ -11,6 +12,8 @@ BetterSnippets is an advanced snippet management plugin for Acode, enhancing you
 - Efficient caching mechanism for improved performance
 
 ## Usage
+
+![Screenshots](https://raw.githubusercontent.com/NezitX/better-snippets/main/assets/screenshots.png)
 
 ### Creating a Snippet
 
