@@ -8,6 +8,7 @@ const DialogBox = acode.require('dialogBox');
 const toast = acode.require("toast");
 const { activeFile, editor } = editorManager;
 const { snippetManager } = ace.require("ace/snippets");
+const langTools = ace.require('ace/ext/language_tools');
 
 class BetterSnippets {
   #completer;
@@ -23,10 +24,11 @@ class BetterSnippets {
     this.#createDialogTemplates();
     this.#initCompleter();
 
-    this.#styles = tag('style', {
-      textContent: style
-    });
-    document.head.append(this.styles);
+    this.#styles = document.createElement('style');
+    this.#styles.id = 'BetterSnippetStyle',
+    this.#styles.innerHTML = style;
+    
+    document.head.append(this.#styles);
   }
 
   #setSnippetsVariables() {
@@ -54,44 +56,47 @@ class BetterSnippets {
   #initCompleter() {
     this.#completer = {
       getCompletions: this.#getCompletions.bind(this),
-      identifierRegexps: [/.*/]
+      identifierRegexps: [/[a-zA-Z_0-9$\-\u00A2-\uFFFF][\w$\-\u00A2-\uFFFF]*/]
     };
-    editor.completers.unshift(this.#completer);
+   
+    editor.completers.push(this.#completer);
   }
 
   async #getCompletions(editor, session, pos, prefix, callback) {
-    try {
-      const fileMode = BetterSnippetsAPI.getSessionMode(session);
-      let snippets = this.#snippetCache.get(fileMode);
+  try {
+    const fileMode = BetterSnippetsAPI.getSessionMode(session);
+    let snippets = this.#snippetCache.get(fileMode);
 
-      if (!snippets) {
-        snippets = await BetterSnippetsAPI.readSnippetsFile(fileMode);
-        this.#snippetCache.set(fileMode, snippets);
-      };
-
-      const baseSnippets = snippets.map(({
-        prefix,
-        code,
-        type = "Snippet",
-        description = ""
-      }) => ({
-        caption: prefix,
-        snippet: code,
-        value: code,
-        meta: type,
-        type: "snippet",
-        docHTML: description
-      }));
-
-      callback(null, baseSnippets);
-    } catch (error) {
-      handleError('Error fetching snippet completions', error);
-      callback(null, []);
+    if (!snippets) {
+      snippets = await BetterSnippetsAPI.readSnippetsFile(fileMode);
+      this.#snippetCache.set(fileMode, snippets);
     }
+
+    const baseSnippets = snippets.map(({
+      prefix,
+      code,
+      type = "Snippet",
+      description = ""
+    }) => ({
+      caption: prefix.trim(),
+      snippet: code.trim(),
+      value: prefix.trim(),
+      meta: type.trim(),
+      type: "Snippet",
+      docHTML: description.trim(),
+      score: 1000
+    }));
+
+    callback(null, baseSnippets);
+  } catch (error) {
+    handleError('Error fetching snippet completions', error);
+    callback(null, []);
   }
+}
 
   async init() {
     await BetterSnippetsAPI.checkSnippetsDir();
+    
     editor.commands.addCommand({
       name: "better-snippets:create_snippet",
       description: "Create Snippet",
@@ -116,6 +121,11 @@ class BetterSnippets {
       name: "better-snippets:clear_cache",
       description: "Clear This Snippets Cache",
       exec: this.clearSnippetsCache.bind(this, BetterSnippetsAPI.getSessionMode(editor.session))
+    });
+    
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableLiveAutocompletion: true
     });
   }
 
@@ -246,18 +256,15 @@ class BetterSnippets {
   }
 
   destroy() {
-    const index = editor.completers.indexOf(this.#completer);
-    if (index !== -1) {
-      editor.completers.splice(index, 1);
-    }
-
+    editor.completers.splice(editor.completers.indexOf(this.#completer), 1);
+    
     editor.commands.removeCommand('better-snippets:create_snippet');
     editor.commands.removeCommand('better-snippets:update_snippet');
     editor.commands.removeCommand('better-snippets:remove_snippet');
     editor.commands.removeCommand('better-snippets:clear_all_cache');
     editor.commands.removeCommand('better-snippets:clear_cache');
 
-    document.head.removeChild(this.#styles);
+    document.querySelector('#BetterSnippetStyle').remove();
   }
 }
 
