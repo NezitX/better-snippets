@@ -1,6 +1,6 @@
 {
   "name": "better-snippets",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Acode plugin for add snippets",
   "main": "dist/main.js",
   "repository": "https://github.com/NezitX/better-snippets.git",
