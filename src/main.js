@@ -120,7 +120,7 @@ class BetterSnippets {
     editor.commands.addCommand({
       name: "better-snippets:clear_cache",
       description: "Clear This Snippets Cache",
-      exec: this.clearSnippetsCache.bind(this, BetterSnippetsAPI.getSessionMode(editor.session))
+      exec: this.clearSnippetsCache.bind(this, BetterSnippetsAPI.getSessionMode(activeFile.session))
     });
     
     editor.setOptions({
@@ -248,10 +248,10 @@ class BetterSnippets {
   clearSnippetsCache(mode) {
     if (mode) {
       this.#snippetCache.delete(mode);
-      toast(`[BetterSnippets] Snippet Cache in ${mode} mode cleared`);
+      toast(`[BetterSnippets] Snippet cache in ${mode} mode cleared`);
     } else {
       this.#snippetCache.clear();
-      toast(`[BetterSnippets] All Snippets Cache cleared`);
+      toast(`[BetterSnippets] All Snippets cache cleared`);
     }
   }
 
