@@ -53,7 +53,8 @@ class BetterSnippets {
 
   #initCompleter() {
     this.#completer = {
-      getCompletions: this.#getCompletions.bind(this)
+      getCompletions: this.#getCompletions.bind(this),
+      identifierRegexps: [/.*/]
     };
     editor.completers.unshift(this.#completer);
   }
