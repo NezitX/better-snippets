@@ -24,8 +24,8 @@ class BetterSnippets {
     this.#initCompleter();
 
     this.#styles = document.createElement('style');
-    this.#styles.id = 'BetterSnippetStyle',
-      this.#styles.innerHTML = style;
+    this.#styles.id = 'BetterSnippetStyle';
+    this.#styles.innerHTML = style;
 
     document.head.append(this.#styles);
   }
@@ -35,7 +35,8 @@ class BetterSnippets {
     this.#loadAllCommands();
     editor.setOptions({
       enableBasicAutocompletion: true,
-      enableLiveAutocompletion: true
+      enableLiveAutocompletion: true,
+      enableSnippets: true
     });
   }
 
@@ -59,6 +60,7 @@ class BetterSnippets {
 
   #initCompleter() {
     this.#completer = {
+      id: 'BetterSnippetsCompleter',
       getCompletions: this.#getCompletions.bind(this),
       identifierRegexps: [/[a-zA-Z_0-9$\-\u00A2-\uFFFF][\w$\-\u00A2-\uFFFF]*/]
     };
@@ -68,6 +70,7 @@ class BetterSnippets {
 
   async #getCompletions(editor, session, pos, prefix, callback) {
     try {
+
       const fileMode = BetterSnippetsAPI.getSessionMode(session);
       let snippets = this.#snippetCache.get(fileMode);
 
@@ -79,17 +82,20 @@ class BetterSnippets {
       const baseSnippets = snippets.map(({
         prefix,
         code,
-        type = "Snippet",
+        type = "snippet",
         description = ""
-      }) => ({
-        caption: prefix.trim(),
-        snippet: code.trim(),
-        value: prefix.trim(),
-        meta: type.trim(),
-        type: "Snippet",
-        docHTML: description.trim(),
-        score: 1000
-      }));
+      }) => {
+        return {
+          caption: prefix.trim(),
+          snippet: code.trim(),
+          value: prefix.trim(),
+          meta: type.trim(),
+          type: "snippet",
+          icon: 'icon document-code-outline',
+          docHTML: description.trim(),
+          score: 1000
+        }
+      });
 
       callback(null, baseSnippets);
     } catch (error) {
@@ -97,7 +103,6 @@ class BetterSnippets {
       callback(null, []);
     };
   }
-
 
   #loadAllCommands() {
     editor.commands.addCommands([{
