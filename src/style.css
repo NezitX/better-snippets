@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .bs-dialog-item {
   display: flex;
   width: 100%;
   flex-direction: column;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 1rem;
 }
 
@@ -20,12 +20,12 @@
 .bs-dialog-item input,
 .bs-dialog-item textarea {
   outline: none;
-  margin-top: .5rem;
-  padding: .5rem 0 .5rem .5rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0 0.5rem 0.5rem;
   background: var(--popup-border-color);
   color: var(--popup-text-color);
   border: 0;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 .bs-dialog-item input::placeholder,
